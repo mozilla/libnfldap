@@ -5,6 +5,10 @@
 import libnfldap
 import sys
 
+LDAP_URL='ldap://<%= ldap_server %>'
+LDAP_BIND_DN='uid=<%= bind_user %>,ou=logins,dc=mozilla'
+LDAP_BIND_PASSWD='<%= bind_password %>'
+
 def main():
 	uidnum = sys.argv[1]
 	print("#Generating rules for user ID %s" % uidnum)
