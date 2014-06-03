@@ -215,26 +215,6 @@ class LDAP(object):
 		self.conn.simple_bind_s(bind_dn, bind_passwd)
 		self.schema = {}
 
-	def getRules(self, base_dn, subtree, ldap_filter):
-		"""
-			First, get the list of VPN groups, with members and IPs, from LDAP.
-			Second, find the groups that the user belongs to, and create the rules.
-			Third, if per user rules exist, load them
-			And finally, insert a DROP rule at the bottom of the ruleset
-
-			Return: A string with the LDAP groups the user belongs to
-		"""
-		usergroups = ""
-		uniq_nets = list()
-		schema = self._queryLDAP(base_dn, subtree, ldap_filter)
-		for group in schema:
-			if usercn in schema[group]['cn']:
-				networks = schema[group]['networks']
-				load_group_rule(usersrcip, usercn, dev, group, networks, uniq_nets)
-				usergroups += group + ';'
-		load_per_user_rules(usersrcip, usercn, dev)
-		return self
-
 	def query(self, base, filterstr, attrlist=None):
 		""" wrapper to search_s """
 		return self.conn.search_s(base, ldap.SCOPE_SUBTREE, filterstr, attrlist)
