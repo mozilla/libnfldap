@@ -3,41 +3,55 @@
 # libnfldap
 
 import libnfldap
+import sys
 
 def main():
+	uidnum = sys.argv[1]
+	print("#Generating rules for user ID %s" % uidnum)
 
-	print("====== IPTABLES RULES ======")
 	# declare a new iptables ruleset
 	ipt = libnfldap.IPTables()
 
 	# insert sane default at the top of the ruleset
 	ipt.insertSaneDefaults()
 
-	# append a rule in the filter table
-	ipt.appendFilterRule('-A OUTPUT -p tcp --dport 80 -j ACCEPT')
+	# declare a new ipset ruleset
+	ips = libnfldap.IPset()
 
-	# create a custom chain in the filter table
-	ipt.newFilterChain('someuser')
-	ipt.appendFilterRule('-A someuser -p tcp --dport 443 -d 10.0.0.2 -j ACCEPT')
+	# find a user in ldap
+	ldap = libnfldap.LDAP(LDAP_URL, LDAP_BIND_DN, LDAP_BIND_PASSWD)
+	userdn,userid = ldap.getUserByNumber('o=com,dc=mozilla', uidnum)
+
+	# create a custom chain and sets for the user
+	ipt.newFilterChain(userid)
+	r = "-A FORWARD -m owner --uid-owner " +  uidnum + " -m state --state NEW -j " + userid
+	ipt.appendFilterRule(r)
+	ips.newHashNet(userid)
+
+	# find groups of an ldap user
+	acls = ldap.getACLs('ou=groups,dc=mozilla',
+						"(&(member="+userdn+")(cn=vpn_*))")
+
+	# iterate through the ACLs
+	print("#====== ACL details ======")
+	for group,dests in acls.iteritems():
+		for dest,desc in dests.iteritems():
+			print("%s has access to %s aka '%s'" % (userid, dest, desc))
+			if libnfldap.is_cidr(dest):
+				ips.addCIDRToHashNet(userid, dest)
+			else:
+				ipt.appendFilterRule("-A " + userid + " -d " + dest + " -j ACCEPT")
 
 	# set a default drop policy at the end of the ruleset
 	ipt.appendDefaultDrop()
 
-	# template the ruleset
-	print(ipt.template())
+	# template and print the iptables rules
+	print("#====== IPTABLES RULES ======\n")
+	print("%s\n\n" % ipt.template())
 
-	print("\n\n====== IPSET RULES ======")
-	# declare a new ipset ruleset
-	ips = libnfldap.IPset()
-
-	# create a set of type hash:net
-	ips.newHashNet('customset')
-
-	# add an cidr to the hash:net
-	ips.addCIDRToHashNet('customset', '10.0.2.0/16')
-
-	# template the ruleset
-	print(ips.template())
+	# template and print the ipset rules
+	print("#====== IPSET RULES ======\n")
+	print("%s" % ips.template())
 
 if __name__ == "__main__":
 	main()
