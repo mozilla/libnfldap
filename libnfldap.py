@@ -110,6 +110,16 @@ class IPTables(object):
 		self.filters.append(rule)
 		return self
 
+	def acceptIPPort(self, chain, ip, port, comment):
+		rule = "-A %s -d %s -p %s -j ACCEPT -m comment --comment '%s'" % (chain, ip, port, comment)
+		self.filters.append(rule)
+		return self
+
+	def acceptIP(self, chain, ip, comment):
+		rule = "-A %s -d %s -j ACCEPT -m comment --comment '%s'" % (chain, ip, comment)
+		self.filters.append(rule)
+		return self
+
 	def newFilterChain(self, name):
 		self.filters.insert(0, ":" + name + " - [0:0]")
 		return self
