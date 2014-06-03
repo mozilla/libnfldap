@@ -27,7 +27,10 @@ def main():
 	# the query lists all users by default. If you want to narrow down the search to
 	# a single user, call the script with a single argument, such as:
 	#	$ python example_allusers.py '(uid=jvehent)'
-	query = '(&(objectClass=mozComPerson)(objectClass=posixAccount)' + sys.argv[1] + ')'
+	customf = ''
+	if len(sys.argv) > 1:
+		customf = sys.argv[1]
+	query = '(&(objectClass=mozComPerson)(objectClass=posixAccount)' + customf + ')'
 	res = ldap.query('dc=mozilla', query, ['cn', 'uid', 'uidNumber'])
 
 	# iterate over the users and create the rules
