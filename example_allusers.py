@@ -45,8 +45,8 @@ def main():
 		# add rules to forward this user's packets to the custom chain and the ipset
 		r = "-A FORWARD -m owner --uid-owner " +  uidNumber + " -m state --state NEW -j " + uid
 		ipt.appendFilterRule(r)
-		r = "-A " + uid + " -m set --set '" + uid + "' -m state --state NEW -j ACCEPT"
-		ipt.appendFilterRule(r)
+		#r = "-A " + uid + " -m set --match-set '" + uid + "' dst -m state --state NEW -j ACCEPT"
+		#ipt.appendFilterRule(r)
 
 		# find ACLs of a given user
 		acls = ldap.getACLs('ou=groups,dc=mozilla',
@@ -57,14 +57,15 @@ def main():
 			for dest,desc in dests.iteritems():
 				# if the destination is a CIDR (IP or subnet), add it to ipset
 				if libnfldap.is_cidr(dest):
-					ipset.addCIDRToHashNet(uid, dest)
+					#ipset.addCIDRToHashNet(uid, dest)
+					ipt.acceptIP(uid, dest, desc)
 				else:
 					# if the destination has ports, add one rule per port
 					ip = dest.split(":", 1)[0]
-					ports = dest.split(":", 1)[1].split(",")
+					ports = dest.split(":", 1)[1]
 					if len(ports) > 0:
-						for port in ports:
-							ipt.acceptIPPort(uid, ip, port, desc)
+						ipt.acceptIPPortProto(uid, ip, ports, "tcp", desc)
+						ipt.acceptIPPortProto(uid, ip, ports, "udp", desc)
 					else:
 						ipt.acceptIP(uid, ip, desc)
 
