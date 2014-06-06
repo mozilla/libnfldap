@@ -195,9 +195,10 @@ COMMIT
 class IPset(object):
 	def __init__(self):
 		self.sets = []
+		self.sets.insert(0, "destroy")
 
 	def newHashNet(self, name):
-		self.sets.insert(0, "create " + name + " hash:net family inet hashsize 1024 maxelem 65536")
+		self.sets.append("create " + name + " hash:net family inet hashsize 1024 maxelem 65536")
 		return self
 
 	def addCIDRToHashNet(self, setname, cidr):
