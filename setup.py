@@ -21,7 +21,7 @@ setup(
     license = "MPL",
     keywords = "libnfldap client library",
     url = "https://github.com/mozilla/libnfldap",
-    long_description=read('README.md'),
+    long_description=read('README.rst'),
 	requires=['ldap', 're'],
     classifiers=[
         "Development Status :: 5 - Production/Stable",
