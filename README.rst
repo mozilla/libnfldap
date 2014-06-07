@@ -5,6 +5,15 @@ libnfldap
 A Python module to generate IPTables and IPSet rules from LDAP records.
 See example.py for a demo.
 
+Installation
+------------
+
+Use PyPi:
+
+.. code:: bash
+
+	$ sudo pip install libnfldap
+
 Example
 -------
 
