@@ -14,7 +14,7 @@ def read(fname):
 setup(
     name = "libnfldap",
 	py_modules=['libnfldap'],
-    version = "1.0.4",
+    version = "1.0.5",
     author = "Julien Vehent",
     author_email = "jvehent@mozilla.com",
     description = ("A client library to generate ipset and iptables rules from LDAP records."),
