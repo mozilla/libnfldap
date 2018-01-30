@@ -25,7 +25,7 @@ setup(
     keywords = "libnfldap client library",
     url = "https://github.com/mozilla/libnfldap",
     long_description=read('README.rst'),
-    install_requires=['ldap', 're'],
+    install_requires=['ldap'],
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Topic :: Software Development :: Libraries :: Python Modules",
