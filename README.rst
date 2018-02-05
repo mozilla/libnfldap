@@ -20,9 +20,7 @@ Or build a RPM using:
 
 	$ python setup.py bdist_rpm
 
-The later will require `python-ldap` to be installed separately, either using
-`yum install python-ldap` or `pip install ldap`. It's up to you, the RPM will
-not attempt to install the ldap dependency.
+The latter will include an RPM dependency for `python-ldap`.
 
 Example
 -------

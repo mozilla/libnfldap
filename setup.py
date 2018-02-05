@@ -6,15 +6,18 @@
 # Author: gdestuynder@mozilla.com
 
 import os
-from distutils.core import setup
+try:
+    from setuptools import setup
+except ImportError:
+    from distutils.core import setup
 
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 setup(
     name = "libnfldap",
-	py_modules=['libnfldap'],
-    version = "1.0.5",
+    py_modules=['libnfldap'],
+    version = "1.0.6",
     author = "Julien Vehent",
     author_email = "jvehent@mozilla.com",
     description = ("A client library to generate ipset and iptables rules from LDAP records."),
@@ -22,10 +25,10 @@ setup(
     keywords = "libnfldap client library",
     url = "https://github.com/mozilla/libnfldap",
     long_description=read('README.rst'),
-	requires=['ldap', 're'],
+    install_requires=['ldap'],
     classifiers=[
         "Development Status :: 5 - Production/Stable",
-		"Topic :: Software Development :: Libraries :: Python Modules",
+        "Topic :: Software Development :: Libraries :: Python Modules",
         "License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)",
     ],
 )
