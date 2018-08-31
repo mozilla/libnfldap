@@ -221,6 +221,7 @@ COMMIT
 class LDAP(object):
 	def __init__(self, url, bind_dn, bind_passwd):
 		self.conn = ldap.initialize(url)
+		self.conn.start_tls_s()
 		self.conn.simple_bind_s(bind_dn, bind_passwd)
 		self.schema = {}
 
