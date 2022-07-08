@@ -11,7 +11,7 @@ install:
 	./setup.py install
 
 rpm:
-	fpm -s python -t rpm -d ldap ./setup.py
+	fpm -s python -t rpm --python-bin python3 -d python3-ldap --no-python-fix-name ./setup.py
 
 deb:
 	fpm -s python -t deb ./setup.py
@@ -20,3 +20,4 @@ clean:
 	rm -rf *pyc
 	rm -rf build
 	rm -rf __pycache__
+	rm -rf libnfldap.egg-info
