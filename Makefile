@@ -20,4 +20,4 @@ clean:
 	rm -rf *pyc
 	rm -rf build
 	rm -rf __pycache__
-	rm -rf libnfldap.egg-info
+	rm -rf src/libnfldap.egg-info
