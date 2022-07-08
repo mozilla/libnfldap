@@ -240,18 +240,18 @@ class LDAP(object):
         acls = dict()
         res = self.query(base, searchstr, ['cn', 'ipHostNumber'])
         for _dn, attr in res:
-            cn = attr['cn'][0]
+            cn = attr['cn'][0].decode('utf-8')
             dests = dict()
-            if attr.has_key('ipHostNumber'):
-                for entry in attr['ipHostNumber']:
-                    dest = entry.split('#', 1)[0].replace(" ", "")
-                    if len(entry.split('#', 1)) == 2:
-                        desc = entry.split('#', 1)[1].strip()
-                    else:
-                        desc = ""
-                    if not is_ip(dest):
-                        print(dest, desc)
-                        raise InputError(dest, "Invalid IP format")
-                    dests[dest] = desc
+            for entry_bytes in attr.get('ipHostNumber', []):
+                entry = entry_bytes.decode('utf-8')
+                dest = entry.split('#', 1)[0].replace(" ", "")
+                if len(entry.split('#', 1)) == 2:
+                    desc = entry.split('#', 1)[1].strip()
+                else:
+                    desc = ""
+                if not is_ip(dest):
+                    print(dest, desc)
+                    raise InputError(dest, "Invalid IP format")
+                dests[dest] = desc
             acls[cn] = dests
         return acls
